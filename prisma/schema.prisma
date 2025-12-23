@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Ingredients {
+  id        Int    @id @default(autoincrement())
+  recipe_id String
+  name      String
+  quantity  String
+
+  recipes Recipes @relation(fields: [recipe_id], references: [id])
+}
+
+model Steps {
+  id        Int     @id @default(autoincrement())
+  recipe_id String
+  step      String
+  recipes   Recipes @relation(fields: [recipe_id], references: [id], onDelete: Cascade)
+}
+
+model Recipes {
+  id          String   @id
+  title       String
+  description String
+  created_at  DateTime @default(now())
+  edited_at   DateTime
+  author_id   String
+  duration    Int
+  serving     Int
+  image       String
+  category_id String
+
+  steps            Steps[]
+  author           Users            @relation(fields: [author_id], references: [id])
+  ingredients      Ingredients[]
+  savedRecipes     SavedRecipes[]
+  recipeCategories RecipeCategories @relation(fields: [category_id], references: [id])
+}
+
+model Users {
+  id           String         @id
+  username     String         @unique
+  bio          String?
+  avatar       String?
+  created_at   DateTime       @default(now())
+  edited_at    DateTime       @default(now())
+  email        String         @unique
+  SavedRecipes SavedRecipes[]
+  recipes      Recipes[]
+}
+
+model SavedRecipes {
+  id        Int    @id @default(autoincrement())
+  user_id   String
+  recipe_id String
+
+  User   Users   @relation(fields: [user_id], references: [id])
+  Recipe Recipes @relation(fields: [recipe_id], references: [id])
+}
+
+model RecipeCategories {
+  id      String    @id
+  name    String
+  recipes Recipes[]
+}
