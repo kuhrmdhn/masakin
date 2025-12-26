@@ -1,4 +1,3 @@
-import { SignUpWithPasswordCredentials } from "@supabase/supabase-js";
 import { NextRequest } from "next/server";
 import { signUpUser } from "../utils/signUpUser";
 import { writeUser } from "../utils/writeUser";
@@ -9,15 +8,13 @@ export async function POST(req: NextRequest) {
   return routeHandler(async () => {
     const body = await req.json();
     const { email, username, password } = body;
-    const credentials: SignUpWithPasswordCredentials = {
+    const credentials = {
       email,
       password,
-      options: {
-        data: { display_name: username },
-      },
+      username,
     };
     if (!username || typeof username !== "string") {
-      return new Response("Username is required", { status: 400 });
+      throw new Error("Nama pengguna tidak boleh kosong");
     }
 
     const userFilter = await prisma.users.findUnique({
@@ -26,7 +23,14 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    if (userFilter) {
+      throw new Error(
+        "Nama pengguna sudah digunakan, silahkan ganti nama pengguna atau masuk ke akun yang sudah terdaftar",
+      );
+    }
+
     const user = await signUpUser(credentials);
+
     if (!user) {
       throw new Error("Failed to sign up, try again later");
     }

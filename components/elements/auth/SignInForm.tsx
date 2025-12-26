@@ -1,5 +1,13 @@
+"use client";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
@@ -25,24 +33,24 @@ const signInFields = [
 
 export default function SignInForm() {
   async function handleSignIn(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    const formData = new FormData(e.currentTarget)
-    const signInCredentials = Object.fromEntries(formData)
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const signInCredentials = Object.fromEntries(formData);
     const request = await fetch("/api/auth/signIn", {
       method: "POST",
       body: JSON.stringify({ ...signInCredentials }),
       headers: {
-        "Content-Type": "Application/json"
-      }
-    })
+        "Content-Type": "Application/json",
+      },
+    });
 
-    const response = await request.json()
+    const response = await request.json();
     if (!response.data) {
-      return toast.warning(response.message)
+      return toast.warning(response.message);
     }
 
-    toast.success(response.message)
-    return window.location.reload()
+    toast.success(response.message);
+    return window.location.reload();
   }
 
   return (
@@ -57,19 +65,29 @@ export default function SignInForm() {
 
       <DialogContent className="flex flex-col gap-7">
         <DialogHeader className="h-max w-full flex flex-col gap-7 items-center">
-          <Image src="/logo-with-text.svg" alt="Masakin Logo with Text" height={900} width={1600} className="w-1/2" />
+          <Image
+            src="/logo-with-text.svg"
+            alt="Masakin Logo with Text"
+            height={900}
+            width={1600}
+            className="w-1/2"
+          />
           <div className="flex flex-col gap-1 items-center">
             <DialogTitle>Masuk ke Akun Anda</DialogTitle>
-            <DialogDescription>Masukkan Kredensial Anda dengan Benar</DialogDescription>
+            <DialogDescription>
+              Masukkan Kredensial Anda dengan Benar
+            </DialogDescription>
           </div>
         </DialogHeader>
 
-        <form onSubmit={(e) => handleSignIn(e)} autoComplete="off" className="space-y-4">
+        <form
+          onSubmit={(e) => handleSignIn(e)}
+          autoComplete="off"
+          className="space-y-4"
+        >
           {signInFields.map((field, index) => (
             <div key={index} className="space-y-2">
-              <Label htmlFor={field.name}>
-                {field.label}
-              </Label>
+              <Label htmlFor={field.name}>{field.label}</Label>
               <Input
                 id={field.name}
                 name={field.name}
@@ -80,10 +98,7 @@ export default function SignInForm() {
               />
             </div>
           ))}
-          <Button
-            type="submit"
-            className="w-full"
-          >
+          <Button type="submit" className="w-full">
             Masuk
           </Button>
         </form>
@@ -91,3 +106,4 @@ export default function SignInForm() {
     </Dialog>
   );
 }
+
