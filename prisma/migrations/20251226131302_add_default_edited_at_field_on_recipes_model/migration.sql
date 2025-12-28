@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Recipes" ALTER COLUMN "edited_at" SET DEFAULT CURRENT_TIMESTAMP;
