@@ -13,7 +13,7 @@ model Ingredients {
   name      String
   quantity  String
 
-  recipes Recipes @relation(fields: [recipe_id], references: [id])
+  recipes Recipes @relation(fields: [recipe_id], references: [id], onDelete: Cascade)
 }
 
 model Steps {
@@ -26,9 +26,9 @@ model Steps {
 model Recipes {
   id          String   @id
   title       String
-  description String
+  description String?
   created_at  DateTime @default(now())
-  edited_at   DateTime
+  edited_at   DateTime @default(now())
   author_id   String
   duration    Int
   serving     Int
@@ -60,7 +60,7 @@ model SavedRecipes {
   recipe_id String
 
   User   Users   @relation(fields: [user_id], references: [id])
-  Recipe Recipes @relation(fields: [recipe_id], references: [id])
+  Recipe Recipes @relation(fields: [recipe_id], references: [id], onDelete: Cascade)
 }
 
 model RecipeCategories {

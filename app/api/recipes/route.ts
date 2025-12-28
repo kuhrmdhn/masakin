@@ -1,7 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { routeHandler } from "../utils/routeHandler";
 import { NextRequest } from "next/server";
-import { v4 as uuidv4 } from "uuid";
+import { uploadNewRecipe } from "./utils/uploadNewRecipe";
+import { readSession } from "../auth/utils/readSession";
 
 export async function GET() {
   return routeHandler(async () => {
@@ -15,7 +16,12 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   return routeHandler(async () => {
-    const body = await req.json();
-    return { data: body, id: uuidv4() };
+    const { id: author_id } = await readSession();
+    const newRecipeData = await req.json();
+    const newRecipe = await uploadNewRecipe({ author_id, ...newRecipeData });
+    return {
+      data: newRecipe,
+      message: `Posted ${newRecipe.title} has been successfully`,
+    };
   });
 }
