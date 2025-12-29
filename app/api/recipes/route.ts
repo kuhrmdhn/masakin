@@ -6,7 +6,12 @@ import { readSession } from "../auth/utils/readSession";
 
 export async function GET() {
   return routeHandler(async () => {
-    const recipes = await prisma.recipes.findMany();
+    const recipes = await prisma.recipes.findMany({
+      include: {
+        author: { select: { id: true, username: true, avatar: true } },
+        ingredients: { select: { name: true } },
+      },
+    });
     return {
       message: `Success get ${recipes.length} recipe(s)`,
       data: recipes,
