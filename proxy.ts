@@ -2,12 +2,12 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export async function proxy(request: NextRequest) {
-  /* const { auth } = await supabaseServer()
-  const { data } = await auth.getUser() */
   const headers = new Headers(request.headers);
-
-  headers.set("x-current-path", request.nextUrl.pathname);
-  return NextResponse.next({ headers });
+  const params = request.nextUrl.searchParams.get("q");
+  if(params) {
+    headers.set("search-params", params);
+    return NextResponse.next({ headers });
+  }
 }
 
 export const config = {

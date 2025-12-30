@@ -1,8 +1,10 @@
-import SidebarAndHeaderLayout from "@/components/layout/SidebarAndHeaderLayout";
 import { Toaster } from "@/components/ui/sonner";
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import "./globals.css";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import AppSidebar from "@/components/elements/sidebar/AppSidebar";
+import AppHeader from "@/components/elements/header/AppHeader";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -23,7 +25,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${montserrat.className} antialiased bg-gray-50`}>
-        <SidebarAndHeaderLayout>{children}</SidebarAndHeaderLayout>
+        <SidebarProvider>
+          <AppSidebar />
+          <main className="rounded-md bg-white w-full lg:m-2 ml-0">
+            <AppHeader />
+            {children}
+          </main>
+        </SidebarProvider>
         <Toaster richColors position="top-right" />
       </body>
     </html>
