@@ -6,10 +6,21 @@ import { readSession } from "../auth/utils/readSession";
 
 export async function GET(req: NextRequest) {
   return routeHandler(async () => {
-    const params = req.nextUrl.searchParams.get("q") || "";
-    const decodedParams = decodeURIComponent(params);
-    const q = decodedParams.trim();
+    const params = req.nextUrl.searchParams;
+
+    // Search recipe params => q
+    const searchKeyParams = params.get("q") || "";
+    const decodedSearchKeyParams = decodeURIComponent(searchKeyParams);
+    const q = decodedSearchKeyParams.trim();
     const haveQuery = q && q.length > 0;
+
+    // Pagination recipe params => pageSize & pageNumber
+    const pageSizeParams = params.get("pageSize") || "10";
+    const pageSize = parseInt(pageSizeParams);
+    const pageNumberParams = params.get("pageNumber") || "1";
+    const pageNumber = parseInt(pageNumberParams);
+
+    const skip = (pageNumber - 1) * pageSize;
 
     const searchQuery = haveQuery
       ? {
@@ -40,19 +51,42 @@ export async function GET(req: NextRequest) {
         ingredients: { select: { name: true } },
       },
       where: searchQuery,
+      skip: skip,
+      take: pageSize,
+      orderBy: {
+        created_at: "desc",
+      },
     });
+
+    const totalRecipes = await prisma.recipes.count({
+      where: searchQuery,
+    });
+
+    const totalPages = Math.ceil(totalRecipes / pageSize);
+    const hasNextPage = pageNumber < totalPages;
 
     return {
       message: `Success get ${recipes.length} recipe(s)`,
       data: recipes,
+      pagination: {
+        currentPage: pageNumber,
+        pageSize,
+        totalRecipes,
+        totalPages,
+        hasNextPage,
+      },
     };
   });
 }
+
 export async function POST(req: NextRequest) {
   return routeHandler(async () => {
-    const { id: author_id } = await readSession();
+    // const { id: author_id } = await readSession();
     const newRecipeData = await req.json();
-    const newRecipe = await uploadNewRecipe({ author_id, ...newRecipeData });
+    const newRecipe = await uploadNewRecipe({
+      author_id: "7d95d59a-d654-434f-969f-f73eb4dd9af6",
+      ...newRecipeData,
+    });
     return {
       data: newRecipe,
       message: `Posted ${newRecipe.title} has been successfully`,

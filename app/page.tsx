@@ -1,11 +1,11 @@
-import RecipeLists from "@/components/elements/recipe/RecipeLists";
+import RecipeLists from "@/components/elements/recipe/card/RecipeLists";
 import { getRecipeLists } from "@/queries/getRecipeLists";
 
 export default async function HomePage() {
-  const lists = await getRecipeLists();
+  const lists = await getRecipeLists(undefined, undefined, undefined);
   return (
     <div className="min-h-dvh w-full">
-      <RecipeLists lists={lists} />
+      <RecipeLists initialData={lists.data} />
     </div>
   );
 }
