@@ -23,7 +23,7 @@ export default function RecipeCard({
   return (
     <div className="h-36 md:h-44 w-full rounded-lg flex bg-white border-gray-300 border">
       <CardImage
-        className="w-[30%] h-full object-cover object-center rounded-l-lg"
+        className="w-36 h-full object-cover object-center rounded-l-lg min-w-36"
         alt={`${title} image`}
         src={image}
       />
