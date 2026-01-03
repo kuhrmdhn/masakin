@@ -142,5 +142,12 @@
   body {
     @apply bg-background text-foreground;
   }
-}
 
+  .recipe-card {
+    @apply h-36 md:h-44 w-full rounded-lg;
+  }
+
+  .recipe-lists-container {
+    @apply px-2 w-full grid xl:grid-cols-2 gap-3 h-max;
+  }
+}

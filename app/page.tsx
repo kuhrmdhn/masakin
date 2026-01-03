@@ -1,11 +1,15 @@
-import RecipeLists from "@/components/elements/recipe/card/RecipeLists";
+import RecipeListsContent from "@/components/elements/recipe/card/RecipeListsContent";
+import RecipeListsSkeleton from "@/components/elements/recipe/card/RecipeListsSkeleton";
 import { getRecipeLists } from "@/queries/getRecipeLists";
+import { Suspense } from "react";
 
 export default async function HomePage() {
   const lists = await getRecipeLists(undefined, undefined, undefined);
   return (
     <div className="min-h-dvh w-full">
-      <RecipeLists initialData={lists.data} />
+      <Suspense fallback={<RecipeListsSkeleton />}>
+        <RecipeListsContent initialData={lists.data} />
+      </Suspense>
     </div>
   );
 }

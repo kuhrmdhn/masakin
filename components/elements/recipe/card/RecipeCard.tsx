@@ -21,13 +21,9 @@ export default function RecipeCard({
   author,
 }: RecipeCardProps) {
   return (
-    <div className="h-36 md:h-44 w-full rounded-lg flex bg-white border-gray-300 border">
-      <CardImage
-        className="w-36 h-full object-cover object-center rounded-l-lg min-w-36"
-        alt={`${title} image`}
-        src={image}
-      />
-      <section className="flex flex-col gap-4 h-full w-full py-2 px-3">
+    <div className="recipe-card flex w-full rounded-lg border bg-white overflow-hidden">
+      <CardImage src={image} alt={`${title} image`} />
+      <section className="flex flex-col justify-between px-3 py-2 flex-1">
         <RecipeOverview title={title} ingredients={ingredients} />
         <AboutRecipe duration={duration} serving={serving} />
         <AuthorDetail username={author.username} avatar={author.avatar} />
@@ -42,13 +38,16 @@ function CardImage({
   ...props
 }: Partial<React.ComponentProps<typeof Image>>) {
   return (
-    <Image
-      width={1080}
-      height={1080}
-      alt={alt || "Recipe Image"}
-      src={src || "/logo-only-icon.svg"}
-      className={`size-20 ${props.className}`}
-    />
+    <div className="relative w-36 aspect-square bg-gray-200">
+      <Image
+        src={src || "/logo-only-icon.svg"}
+        alt={alt || "Recipe Image"}
+        fill
+        sizes="144px"
+        className={`object-cover ${props.className}`}
+        {...props}
+      />
+    </div>
   );
 }
 
