@@ -1,5 +1,7 @@
-import RecipeLists from "@/components/elements/recipe/card/RecipeLists";
+import RecipeListsContent from "@/components/elements/recipe/card/RecipeListsContent";
+import RecipeListsSkeleton from "@/components/elements/recipe/card/RecipeListsSkeleton";
 import { getRecipeLists } from "@/queries/getRecipeLists";
+import { Suspense } from "react";
 
 export default async function SearchPage({
   searchParams,
@@ -11,7 +13,9 @@ export default async function SearchPage({
   const lists = await getRecipeLists(q);
   return (
     <div className="min-h-dvh w-full">
-      <RecipeLists initialData={lists.data} q={q} />
+      <Suspense fallback={<RecipeListsSkeleton />}>
+        <RecipeListsContent initialData={lists.data} q={q} />
+      </Suspense>
     </div>
   );
 }

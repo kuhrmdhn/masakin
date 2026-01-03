@@ -3,7 +3,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import RecipeCard, { RecipeCardProps } from "./RecipeCard";
 import { getRecipeLists } from "@/queries/getRecipeLists";
 
-export default function RecipeLists({
+export default function RecipeListsContent({
   initialData,
   initialPage = 1,
   pageSize = 10,
@@ -81,8 +81,8 @@ export default function RecipeLists({
   }, [initialData, initialPage]);
 
   return (
-    <div>
-      <section className="w-full grid grid-cols-2 gap-3 min-h-dvh">
+    <>
+      <section className="recipe-lists-container">
         {recipeLists.map((list, index) => (
           <RecipeCard {...list} key={index} />
         ))}
@@ -94,22 +94,24 @@ export default function RecipeLists({
           className="h-20 w-full flex items-center justify-center"
         >
           <div className="text-gray-500">
-            {isLoading ? "Loading more recipes..." : "Scroll for more"}
+            {isLoading
+              ? "Memuat resep lainnya..."
+              : "Gulir untuk melihat resep selanjutnya"}
           </div>
         </div>
       )}
 
       {!hasMore && recipeLists.length > 0 && (
         <div className="h-20 w-full flex items-center justify-center">
-          <div className="text-gray-500">No more recipes to load</div>
+          <div className="text-gray-500">Tidak ada resep lagi untuk dimuat</div>
         </div>
       )}
 
       {recipeLists.length === 0 && (
         <div className="h-40 w-full flex items-center justify-center">
-          <div className="text-gray-500">No recipes found</div>
+          <div className="text-gray-500">Tidak ada resep ditemukan</div>
         </div>
       )}
-    </div>
+    </>
   );
 }
