@@ -81,10 +81,10 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   return routeHandler(async () => {
-    // const { id: author_id } = await readSession();
+    const { id: author_id } = await readSession();
     const newRecipeData = await req.json();
     const newRecipe = await uploadNewRecipe({
-      author_id: "7d95d59a-d654-434f-969f-f73eb4dd9af6",
+      author_id,
       ...newRecipeData,
     });
     return {
