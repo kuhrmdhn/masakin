@@ -58,4 +58,6 @@ const userSchema = publicSchema.extend({
   avatar: z.string().optional(),
 });
 
+export type User = z.infer<typeof userSchema> & { id: string };
+
 export { signInSchema, signUpSchema, userSchema };
