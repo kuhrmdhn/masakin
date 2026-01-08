@@ -1,4 +1,5 @@
 import z from "zod";
+import { User } from "./authSchema";
 
 const rules = {
   title: {
@@ -55,6 +56,11 @@ const recipeSchema = z.object({
     .min(1, "Resep setidaknya memiliki 1 bahan"),
 });
 
-export type Recipe = z.infer<typeof recipeSchema>;
+export type Recipe = z.infer<typeof recipeSchema> & {
+  id: string;
+  author: User;
+  ingredients: { quantity: string; name: string }[];
+  steps: { step: string }[];
+};
 
 export { recipeSchema, recipeStepSchema, recipeIngredientSchema };
