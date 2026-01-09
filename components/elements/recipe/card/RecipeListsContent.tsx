@@ -1,21 +1,20 @@
 "use client";
-import { useEffect, useRef, useState, useCallback } from "react";
-import RecipeCard, { RecipeCardProps } from "./RecipeCard";
 import { getRecipeLists } from "@/queries/getRecipeLists";
+import { useCallback, useEffect, useRef, useState } from "react";
+import RecipeCard, { RecipeCardProps } from "./RecipeCard";
 
 export default function RecipeListsContent({
-  initialData,
+  initialData = [],
   initialPage = 1,
   pageSize = 10,
   q = undefined,
 }: {
-  initialData: RecipeCardProps[];
+  initialData?: RecipeCardProps[];
   initialPage?: number;
   pageSize?: number;
   q?: string;
 }) {
-  const [recipeLists, setRecipeLists] =
-    useState<RecipeCardProps[]>(initialData);
+  const [recipeLists, setRecipeLists] = useState<RecipeCardProps[]>(initialData);
   const [hasMore, setHasMore] = useState(true);
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [isLoading, setIsLoading] = useState(false);
@@ -45,7 +44,7 @@ export default function RecipeListsContent({
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, hasMore, isLoading, pageSize]);
+  }, [currentPage, hasMore, isLoading, pageSize,q]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(

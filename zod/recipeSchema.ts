@@ -62,5 +62,8 @@ export type Recipe = z.infer<typeof recipeSchema> & {
   ingredients: { quantity: string; name: string }[];
   steps: { step: string }[];
 };
+export type RecipeIngredients = z.infer<typeof recipeIngredientSchema>;
+export type RecipeSteps = z.infer<typeof recipeStepSchema>;
+export type SavedRecipe = { id: string; recipe_id: string; user_id: string };
 
 export { recipeSchema, recipeStepSchema, recipeIngredientSchema };

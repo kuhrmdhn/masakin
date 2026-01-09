@@ -4,7 +4,7 @@ import { getRecipeLists } from "@/queries/getRecipeLists";
 import { Suspense } from "react";
 
 export default async function HomePage() {
-  const lists = await getRecipeLists(undefined, undefined, undefined);
+  const lists = await getRecipeLists();
   return (
     <div className="min-h-dvh w-full">
       <Suspense fallback={<RecipeListsSkeleton />}>
