@@ -17,7 +17,7 @@ export async function getRecipeLists(
   try {
     const request = await fetch(url, {
       method: "GET",
-      cache: "no-store",
+      next: { revalidate: 60 }
     });
 
     if (!request.ok) {
