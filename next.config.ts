@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "rsmzlbrqqavungarggrm.supabase.co",
+        hostname: process.env.SUPABASE_IMAGE_PROTOCOL!,
       },
     ],
   },
