@@ -27,12 +27,12 @@ export default function RootLayout({
       <body className={`${montserrat.className} antialiased bg-gray-50`}>
         <SidebarProvider>
           <AppSidebar />
-          <main className="rounded-md bg-white w-full lg:m-2 ml-0">
+          <main className="rounded-md bg-white w-full lg:m-2 ml-0 px-5">
             <AppHeader />
             {children}
           </main>
         </SidebarProvider>
-        <Toaster richColors position="top-right" theme="light"/>
+        <Toaster richColors position="top-right" theme="light" />
       </body>
     </html>
   );

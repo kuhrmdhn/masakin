@@ -10,7 +10,7 @@ export default function RecipeDurationAndServingDetail({
   const abouts = [
     {
       icon: Clock,
-      value: `${duration / 60} Menit`,
+      value: `${Math.floor(duration / 60)} Menit`,
     },
     {
       icon: User,

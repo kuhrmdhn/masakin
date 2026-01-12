@@ -1,9 +1,8 @@
 import { RecipeIngredients, RecipeSteps } from '@/zod/recipeSchema'
-import React from 'react'
 
 type Props = {
-    ingredients: RecipeIngredients[]
-    steps: RecipeSteps[]
+    ingredients: Omit<RecipeIngredients, 'id'>[]
+    steps: Omit<RecipeSteps, 'id'>[]
 }
 
 export default function RecipeIngredientsAndSteps({ ingredients, steps }: Props) {

@@ -34,7 +34,7 @@ export default async function RecipeDetails({ recipeId }: Props) {
     id: recipeId,
   };
   return (
-    <div className="px-5 w-full">
+    <div className="w-full">
       <DetailContent {...detailContents} />
       <RecipeIngredientsAndSteps ingredients={ingredients} steps={steps} />
     </div>

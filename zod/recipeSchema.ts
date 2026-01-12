@@ -12,16 +12,6 @@ const rules = {
       message: "Nama resep maksimal adalah 100 karakter",
     },
   },
-  description: {
-    min: {
-      count: 1,
-      message: "Deskripsi minimal 1 karakter dan bersifat opsional",
-    },
-    max: {
-      count: 250,
-      message: "Deskripsi resep maksimal memiliki 250 karakter",
-    },
-  },
 };
 
 const recipeStepSchema = z.object({
@@ -40,9 +30,17 @@ const recipeSchema = z.object({
     .max(rules.title.max.count, rules.title.max.message),
   description: z
     .string()
-    .min(rules.description.min.count, rules.description.min.message)
-    .max(rules.description.max.count, rules.description.max.message)
-    .optional(),
+    .optional()
+    .refine(
+      (val) => {
+        if (typeof val === "undefined") return true;
+        if (val.trim() === "") return true;
+        return val.length >= 3 && val.length <= 100;
+      },
+      {
+        message: "Description must be 3-100 characters if provided",
+      },
+    ),
   author_id: z.string(),
   duration: z.number(),
   serving: z.number(),
@@ -62,8 +60,10 @@ export type Recipe = z.infer<typeof recipeSchema> & {
   ingredients: { quantity: string; name: string }[];
   steps: { step: string }[];
 };
-export type RecipeIngredients = z.infer<typeof recipeIngredientSchema>;
-export type RecipeSteps = z.infer<typeof recipeStepSchema>;
+export type RecipeIngredients = z.infer<typeof recipeIngredientSchema> & {
+  id: string;
+};
+export type RecipeSteps = z.infer<typeof recipeStepSchema> & { id: string };
 export type SavedRecipe = { id: string; recipe_id: string; user_id: string };
 
 export { recipeSchema, recipeStepSchema, recipeIngredientSchema };

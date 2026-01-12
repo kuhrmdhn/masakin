@@ -1,4 +1,3 @@
-// queries/getRecipeLists.ts
 export async function getRecipeLists(
   q?: string,
   pageNumber?: number,
@@ -20,12 +19,8 @@ export async function getRecipeLists(
       next: { revalidate: 60 }
     });
 
-    if (!request.ok) {
-      throw new Error(`HTTP error! status: ${request.status}`);
-    }
-
     const response = await request.json();
-    return response; // Return the entire response, not just data
+    return response;
   } catch (error) {
     console.error("Error fetching recipes:", error);
     return { data: [], pagination: { hasNextPage: false } };
