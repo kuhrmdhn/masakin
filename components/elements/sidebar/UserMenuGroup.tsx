@@ -29,16 +29,16 @@ export default function UserMenuGroup() {
 
 function MainMenus() {
   const mainMenus = [
-    { icon: Home, name: "Beranda" },
-    { icon: Upload, name: "Unggah Resep" },
-    { icon: BookMarked, name: "Koleksi Resep" },
+    { icon: Home, name: "Beranda", href:"/" },
+    { icon: Upload, name: "Unggah Resep", href:"/recipes/new" },
+    { icon: BookMarked, name: "Koleksi Resep", href:"/" },
   ];
   return (
     <>
       {mainMenus.map((menu, index) => (
         <SidebarMenuItem key={index}>
           <SidebarMenuButton className="h-10">
-            <SidebarMenuLink href="" icon={menu.icon} text={menu.name} />
+            <SidebarMenuLink href={menu.href} icon={menu.icon} text={menu.name} />
           </SidebarMenuButton>
         </SidebarMenuItem>
       ))}

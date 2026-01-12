@@ -9,7 +9,7 @@ export async function routeHandler<T>(callback: () => Promise<T>) {
         console.error(error);
         return NextResponse.json({
             data: null,
-            message: error.message ?? "Internal Server Error"
+            error: error.message ?? "Internal Server Error"
         }, { status: 500 })
     }
 }

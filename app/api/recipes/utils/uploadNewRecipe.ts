@@ -2,10 +2,44 @@ import { prisma } from "@/lib/prisma";
 import { recipeSchema } from "@/zod/recipeSchema";
 import z from "zod";
 import { v4 as uuidv4 } from "uuid";
+import { uploadRecipeImage } from "./uploadRecipeImage";
 
-type Recipe = z.infer<typeof recipeSchema>;
+export async function uploadNewRecipe(formData: FormData, author_id: string) {
+  const title = formData.get("title") as string;
+  const serving = parseInt(formData.get("serving") as string);
+  const duration = parseInt(formData.get("duration") as string) * 60;
+  const category_id = formData.get("category_id") as string;
 
-export async function uploadNewRecipe(newRecipeData: Recipe) {
+  const rawImageValue = formData.get("image") as File;
+
+  const rawDescriptionValue = formData.get("description") as string;
+  const description =
+    rawDescriptionValue.length === 0 ? undefined : rawDescriptionValue;
+
+  const rawStepsValue = formData.getAll("steps") as string[];
+  const stepsValue = rawStepsValue.map((step) => ({ step }));
+
+  const rawNameValue = formData.getAll("name") as string[];
+  const rawQuantityValue = formData.getAll("quantity") as string[];
+  const ingredientsValue = rawQuantityValue.map((quantity, i) => ({
+    quantity,
+    name: rawNameValue[i],
+  }));
+
+  const { publicUrl } = await uploadRecipeImage(rawImageValue);
+
+  const newRecipeData = {
+    title,
+    description,
+    duration,
+    serving,
+    category_id,
+    author_id,
+    image: publicUrl,
+    steps: stepsValue,
+    ingredients: ingredientsValue,
+  };
+
   const {
     data: decodedData,
     success,

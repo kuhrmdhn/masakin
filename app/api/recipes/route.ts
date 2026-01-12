@@ -3,6 +3,7 @@ import { routeHandler } from "../utils/routeHandler";
 import { NextRequest } from "next/server";
 import { uploadNewRecipe } from "./utils/uploadNewRecipe";
 import { readSession } from "../auth/utils/readSession";
+import { revalidatePath } from "next/cache";
 
 export async function GET(req: NextRequest) {
   return routeHandler(async () => {
@@ -81,15 +82,13 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   return routeHandler(async () => {
+    const formData = await req.formData();
     const { id: author_id } = await readSession();
-    const newRecipeData = await req.json();
-    const newRecipe = await uploadNewRecipe({
-      author_id,
-      ...newRecipeData,
-    });
+    const newRecipe = await uploadNewRecipe(formData, author_id);
+    revalidatePath("/")
     return {
       data: newRecipe,
-      message: `Posted ${newRecipe.title} has been successfully`,
+      message: `Posted new recipe: ${newRecipe.id}`,
     };
   });
 }

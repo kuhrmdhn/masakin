@@ -150,4 +150,8 @@
   .recipe-lists-container {
     @apply px-2 w-full grid xl:grid-cols-2 gap-3 h-max;
   }
+
+  .recipe-form-section-heading {
+    @apply flex items-center font-bold text-lg gap-2 text-primary mb-3;
+  }
 }
