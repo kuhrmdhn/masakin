@@ -14,7 +14,7 @@ export default async function SearchPage({
   return (
     <div className="min-h-dvh w-full">
       <Suspense fallback={<RecipeListsSkeleton />}>
-        <RecipeListsContent initialData={lists.data} q={q} />
+        <RecipeListsContent initialData={lists.data} apiEndpoint="/api/recipes" params={q} />
       </Suspense>
     </div>
   );

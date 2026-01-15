@@ -66,7 +66,7 @@ export default function ImageInput({
         )}
         {previewImage !== backupImage && (
           <Button
-            className="absolute top-0 right-0 z-12"
+            className="absolute top-0 right-0 z-5"
             size="icon-lg"
             variant="destructive"
             onClick={() => resetImage()}
@@ -74,7 +74,7 @@ export default function ImageInput({
             <Trash />
           </Button>
         )}
-        <Label className="size-full rounded-lg opacity-0 hover:opacity-100 hover:bg-[rgba(0,0,0,0.5)] duration-200 absolute top-0 z-10">
+        <Label className="size-full rounded-lg opacity-0 hover:opacity-100 hover:bg-[rgba(0,0,0,0.5)] duration-200 absolute top-0 z-1">
           <Input
             onChange={(e) => handleChangeImage(e)}
             ref={inputRef}

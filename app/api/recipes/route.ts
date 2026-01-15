@@ -4,6 +4,7 @@ import { NextRequest } from "next/server";
 import { uploadNewRecipe } from "./utils/uploadNewRecipe";
 import { readSession } from "../auth/utils/readSession";
 import { revalidatePath } from "next/cache";
+import { pagination } from "../utils/pagination";
 
 export async function GET(req: NextRequest) {
   return routeHandler(async () => {
@@ -15,35 +16,29 @@ export async function GET(req: NextRequest) {
     const q = decodedSearchKeyParams.trim();
     const haveQuery = q && q.length > 0;
 
-    // Pagination recipe params => pageSize & pageNumber
-    const pageSizeParams = params.get("pageSize") || "10";
-    const pageSize = parseInt(pageSizeParams);
-    const pageNumberParams = params.get("pageNumber") || "1";
-    const pageNumber = parseInt(pageNumberParams);
-
-    const skip = (pageNumber - 1) * pageSize;
+    const { pageNumber, pageSize, skip } = pagination(req)
 
     const searchQuery = haveQuery
       ? {
-          OR: [
-            {
-              title: {
-                contains: q,
-                mode: "insensitive" as const,
-              },
+        OR: [
+          {
+            title: {
+              contains: q,
+              mode: "insensitive" as const,
             },
-            {
-              ingredients: {
-                some: {
-                  name: {
-                    contains: q,
-                    mode: "insensitive" as const,
-                  },
+          },
+          {
+            ingredients: {
+              some: {
+                name: {
+                  contains: q,
+                  mode: "insensitive" as const,
                 },
               },
             },
-          ],
-        }
+          },
+        ],
+      }
       : undefined;
 
     const recipes = await prisma.recipes.findMany({
