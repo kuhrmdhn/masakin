@@ -55,16 +55,20 @@ model Users {
 }
 
 model SavedRecipes {
-  id        Int    @id @default(autoincrement())
-  user_id   String
-  recipe_id String
+  id         Int      @id @default(autoincrement())
+  user_id    String
+  recipe_id  String
+  created_at DateTime @default(now())
+  edited_at  DateTime @default(now())
 
   User   Users   @relation(fields: [user_id], references: [id])
   Recipe Recipes @relation(fields: [recipe_id], references: [id], onDelete: Cascade)
 }
 
 model RecipeCategories {
-  id      String    @id
-  name    String
-  recipes Recipes[]
+  id         String    @id
+  name       String
+  recipes    Recipes[]
+  created_at DateTime  @default(now())
+  edited_at  DateTime  @default(now())
 }

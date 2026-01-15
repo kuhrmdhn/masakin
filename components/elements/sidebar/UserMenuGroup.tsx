@@ -31,7 +31,7 @@ function MainMenus() {
   const mainMenus = [
     { icon: Home, name: "Beranda", href:"/" },
     { icon: Upload, name: "Unggah Resep", href:"/recipes/new" },
-    { icon: BookMarked, name: "Koleksi Resep", href:"/" },
+    { icon: BookMarked, name: "Koleksi Resep", href:"/saved-recipes" },
   ];
   return (
     <>

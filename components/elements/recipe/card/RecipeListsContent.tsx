@@ -1,33 +1,48 @@
 "use client";
-import { getRecipeLists } from "@/queries/getRecipeLists";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
+import { useCallback, useEffect, useState } from "react";
 import RecipeCard, { RecipeCardProps } from "./RecipeCard";
 
 export default function RecipeListsContent({
+  apiEndpoint,
+  params,
   initialData = [],
-  initialPage = 1,
-  pageSize = 10,
-  q = undefined,
+  initialPage = 1
 }: {
+  apiEndpoint: string
+  params?: string | string[][] | Record<string, string> | URLSearchParams | undefined;
+  initialPage?: number
   initialData?: RecipeCardProps[];
-  initialPage?: number;
-  pageSize?: number;
-  q?: string;
 }) {
   const [recipeLists, setRecipeLists] = useState<RecipeCardProps[]>(initialData);
   const [hasMore, setHasMore] = useState(true);
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [isLoading, setIsLoading] = useState(false);
-  const loaderTrigger = useRef<HTMLDivElement>(null);
 
   const loadMoreRecipes = useCallback(async () => {
     if (isLoading || !hasMore) return;
 
     setIsLoading(true);
     try {
-      const nextPage = currentPage + 1;
-      const response = await getRecipeLists(q, nextPage, pageSize);
+      const buildUrl = (page: number) => {
+        const searchParams = new URLSearchParams();
+        searchParams.set("pageNumber", String(page));
 
+        if (params) {
+          Object.entries(params).forEach(([key, value]) => {
+            if (value !== undefined && value !== "") {
+              searchParams.set(key, String(value));
+            }
+          });
+        }
+
+        return `${apiEndpoint}?${searchParams.toString()}`;
+      };
+
+      const nextPage = currentPage + 1;
+      const request = await fetch(buildUrl(nextPage), {});
+      const response = await request.json()
+      
       if (response.data.length === 0) {
         setHasMore(false);
       } else {
@@ -44,34 +59,9 @@ export default function RecipeListsContent({
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, hasMore, isLoading, pageSize,q]);
+  }, [currentPage, hasMore, isLoading, apiEndpoint, params]);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const firstEntry = entries[0];
-        if (firstEntry.isIntersecting && hasMore && !isLoading) {
-          loadMoreRecipes();
-        }
-      },
-      {
-        root: null,
-        rootMargin: "100px",
-        threshold: 0.1,
-      },
-    );
-
-    const currentLoader = loaderTrigger.current;
-    if (currentLoader) {
-      observer.observe(currentLoader);
-    }
-
-    return () => {
-      if (currentLoader) {
-        observer.unobserve(currentLoader);
-      }
-    };
-  }, [hasMore, isLoading, loadMoreRecipes]);
+  const { loaderTriggerComponent } = useInfiniteScroll(loadMoreRecipes, hasMore && !isLoading)
 
   useEffect(() => {
     setRecipeLists(initialData);
@@ -89,7 +79,7 @@ export default function RecipeListsContent({
 
       {hasMore && (
         <div
-          ref={loaderTrigger}
+          ref={loaderTriggerComponent}
           className="h-20 w-full flex items-center justify-center"
         >
           <div className="text-gray-500">
