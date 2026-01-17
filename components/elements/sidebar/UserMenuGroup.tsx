@@ -29,16 +29,20 @@ export default function UserMenuGroup() {
 
 function MainMenus() {
   const mainMenus = [
-    { icon: Home, name: "Beranda", href:"/" },
-    { icon: Upload, name: "Unggah Resep", href:"/recipes/new" },
-    { icon: BookMarked, name: "Koleksi Resep", href:"/saved-recipes" },
+    { icon: Home, name: "Beranda", href: "/" },
+    { icon: Upload, name: "Unggah Resep", href: "/recipes/new" },
+    { icon: BookMarked, name: "Koleksi Resep", href: "/saved-recipes" },
   ];
   return (
     <>
       {mainMenus.map((menu, index) => (
         <SidebarMenuItem key={index}>
           <SidebarMenuButton className="h-10">
-            <SidebarMenuLink href={menu.href} icon={menu.icon} text={menu.name} />
+            <SidebarMenuLink
+              href={menu.href}
+              icon={menu.icon}
+              text={menu.name}
+            />
           </SidebarMenuButton>
         </SidebarMenuItem>
       ))}
@@ -57,14 +61,14 @@ async function AuthMenus() {
   });
 
   const response = await request.json();
-  const isAuthenticated = response.data;
+  const isAuthenticated = !!response.data;
 
   return (
     <>
       {isAuthenticated ? (
         <SidebarMenuItem>
           <SidebarMenuButton className="h-10 overflow-visible">
-            <SidebarMenuLink href="/" text="Profil" icon={ProfileIcon} />
+            <SidebarMenuLink href="/profile" text="Profil" icon={ProfileIcon} />
           </SidebarMenuButton>
         </SidebarMenuItem>
       ) : (
