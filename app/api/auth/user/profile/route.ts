@@ -8,8 +8,7 @@ export async function GET() {
     const userData = await prisma.users.findUnique({
       where: { id },
       omit: { email: true },
-      include: { recipes: true },
     });
-    return userData;
+    return { data: userData };
   });
 }

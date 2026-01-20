@@ -13,7 +13,6 @@ export async function GET(req: NextRequest) {
 
     const user = await prisma.users.findUnique({
       where: { username: username },
-      include: { recipes: true },
       omit: { email: true },
     });
 
@@ -21,6 +20,6 @@ export async function GET(req: NextRequest) {
       throw new Error("User not found");
     }
 
-    return user;
+    return { data: user };
   });
 }

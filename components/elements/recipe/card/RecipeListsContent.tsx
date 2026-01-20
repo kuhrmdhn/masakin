@@ -7,14 +7,20 @@ export default function RecipeListsContent({
   apiEndpoint,
   params,
   initialData = [],
-  initialPage = 1
+  initialPage = 1,
 }: {
-  apiEndpoint: string
-  params?: string | string[][] | Record<string, string> | URLSearchParams | undefined;
-  initialPage?: number
+  apiEndpoint: string;
+  params?:
+    | string
+    | string[][]
+    | Record<string, string>
+    | URLSearchParams
+    | undefined;
+  initialPage?: number;
   initialData?: RecipeCardProps[];
 }) {
-  const [recipeLists, setRecipeLists] = useState<RecipeCardProps[]>(initialData);
+  const [recipeLists, setRecipeLists] =
+    useState<RecipeCardProps[]>(initialData);
   const [hasMore, setHasMore] = useState(true);
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [isLoading, setIsLoading] = useState(false);
@@ -41,8 +47,8 @@ export default function RecipeListsContent({
 
       const nextPage = currentPage + 1;
       const request = await fetch(buildUrl(nextPage), {});
-      const response = await request.json()
-      
+      const response = await request.json();
+
       if (response.data.length === 0) {
         setHasMore(false);
       } else {
@@ -61,13 +67,16 @@ export default function RecipeListsContent({
     }
   }, [currentPage, hasMore, isLoading, apiEndpoint, params]);
 
-  const { loaderTriggerComponent } = useInfiniteScroll(loadMoreRecipes, hasMore && !isLoading)
+  const { loaderTriggerComponent } = useInfiniteScroll(
+    loadMoreRecipes,
+    hasMore && !isLoading,
+  );
 
   useEffect(() => {
     setRecipeLists(initialData);
     setCurrentPage(initialPage);
     setHasMore(true);
-  }, [initialData, initialPage]);
+  }, []);
 
   return (
     <>
