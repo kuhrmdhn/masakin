@@ -28,7 +28,7 @@ async function getMemberProfile(username: string) {
 
 async function getMemberRecipe(username: string) {
   const request = await fetch(
-    `${process.env.BASE_URL}/api/member/recipe?username=${username}`,
+    `${process.env.BASE_URL}/api/member/recipes?username=${username}`,
     {
       next: { revalidate: 60 },
     },

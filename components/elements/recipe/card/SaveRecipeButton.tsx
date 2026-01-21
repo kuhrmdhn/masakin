@@ -7,9 +7,7 @@ type Props = {
   recipeId: string;
 };
 
-export default function SaveRecipeButton({
-  recipeId,
-}: Props) {
+export default function SaveRecipeButton({ recipeId }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [isSavedRecipe, setIsSavedRecipe] = useState(false);
 
@@ -41,7 +39,7 @@ export default function SaveRecipeButton({
         );
         const response = await request.json();
 
-        setIsSavedRecipe(response.status);
+        setIsSavedRecipe(response.data.status);
       } catch (error) {
         console.error("Error checking bookmark status:", error);
       }

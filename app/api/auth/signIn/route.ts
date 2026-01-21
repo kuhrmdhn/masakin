@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { routeHandler } from "../../utils/routeHandler";
 import { signInUser } from "../utils/signInUser";
+import ApiResponse from "../../utils/apiResponse";
 
 export async function POST(req: NextRequest) {
   return routeHandler(async () => {
@@ -9,9 +10,10 @@ export async function POST(req: NextRequest) {
 
     const user = await signInUser({ email, password });
 
-    return {
-      message: "Sign in successfully",
-      data: user,
+    if (!user) {
+      return ApiResponse.unauthenticated();
     }
-  })
+
+    return ApiResponse.success("Sign in successfully", user);
+  });
 }

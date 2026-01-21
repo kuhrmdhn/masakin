@@ -3,6 +3,7 @@ import { readSession } from "../../utils/readSession";
 import { prisma } from "@/lib/prisma";
 import { pagination } from "@/app/api/utils/pagination";
 import { NextRequest } from "next/server";
+import ApiResponse from "@/app/api/utils/apiResponse";
 
 export async function GET(req: NextRequest) {
   return routeHandler(async () => {
@@ -20,18 +21,12 @@ export async function GET(req: NextRequest) {
       where: { author_id: id },
     });
     const totalPages = Math.ceil(totalRecipes / pageSize);
-    const hasNextPage = totalPages < pageNumber;
 
-    return {
-      data: userRecipe,
-      message: `Successfully get ${userRecipe.length} recipe`,
-      pagination: {
-        currentPage: pageNumber,
-        pageSize,
-        totalRecipes,
-        totalPages,
-        hasNextPage,
-      },
-    };
+    return ApiResponse.paginated(
+      `Successfully get ${userRecipe.length} recipe`,
+      pageNumber,
+      totalPages,
+      userRecipe,
+    );
   });
 }

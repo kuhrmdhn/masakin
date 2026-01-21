@@ -4,11 +4,12 @@ import { prisma } from "@/lib/prisma";
 import { NextRequest } from "next/server";
 import { pagination } from "@/app/api/utils/pagination";
 import { revalidatePath } from "next/cache";
+import ApiResponse from "@/app/api/utils/apiResponse";
 
 export async function GET(req: NextRequest) {
   return routeHandler(async () => {
     const { id: userId } = await readSession();
-    const { skip, pageSize } = pagination(req)
+    const { skip, pageSize, pageNumber } = pagination(req);
 
     const savedRecipesByUser = await prisma.savedRecipes.findMany({
       where: { user_id: userId },
@@ -28,15 +29,27 @@ export async function GET(req: NextRequest) {
       skip,
       take: pageSize,
       orderBy: {
-        created_at: "desc"
-      }
+        created_at: "desc",
+      },
     });
-    const flattened = savedRecipesByUser.map((item) => ({
+
+    const totalSavedRecipes = await prisma.savedRecipes.count({
+      where: { user_id: userId },
+    });
+
+    const totalPages = Math.ceil(totalSavedRecipes / pageSize);
+
+    const savedRecipes = savedRecipesByUser.map((item) => ({
       id: item.recipe_id,
       ...item.Recipe,
     }));
 
-    return { data: flattened };
+    return ApiResponse.paginated(
+      `Success get user saved recipes`,
+      pageNumber,
+      totalPages,
+      savedRecipes,
+    );
   });
 }
 
@@ -46,11 +59,14 @@ export async function POST(req: NextRequest) {
     const { id: userId } = await readSession();
     const savedRecipe = await prisma.savedRecipes.create({
       data: { user_id: userId, recipe_id: recipeId },
+      select: { Recipe: true },
     });
 
-    revalidatePath("/saved-recipes")
+    revalidatePath("/saved-recipes");
 
-    return { data: savedRecipe };
+    return ApiResponse.success(
+      `Added ${savedRecipe.Recipe.title} to user saved recipes`,
+    );
   });
 }
 
@@ -58,14 +74,11 @@ export async function DELETE(req: NextRequest) {
   return routeHandler(async () => {
     const { recipeId } = await req.json();
     const { id: userId } = await readSession();
-    const deletedSavedRecipe = await prisma.savedRecipes.deleteMany({
+    const deleteSavedRecipe = await prisma.savedRecipes.deleteMany({
       where: { recipe_id: recipeId, user_id: userId },
     });
+    const deletedRecipes = deleteSavedRecipe.count;
 
-    return {
-      data: false,
-      success: deletedSavedRecipe.count > 0,
-      deletedCount: deletedSavedRecipe.count,
-    };
+    return ApiResponse.success(`Deleted ${deletedRecipes} user saved recipes`);
   });
 }

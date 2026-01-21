@@ -3,10 +3,9 @@ import { prisma } from "@/lib/prisma";
 
 export async function deleteRecipe(id: string) {
   const { id: currentUserId } = await readSession();
-  const deletedRecipeId = await prisma.recipes.delete({
+  const deletedRecipes = await prisma.recipes.deleteMany({
     where: { id: id, author_id: currentUserId },
-    select: { id: true },
   });
 
-  return deletedRecipeId;
+  return deletedRecipes;
 }

@@ -27,6 +27,7 @@ export default function NewRecipePage() {
 
       const response = await request.json();
       const newRecipe = response.data as Recipe;
+      console.log({ newRecipe, response });
       toast.success("Resep berhasil diunggah!");
       router.push(`/recipes/${newRecipe.id}`);
     } catch (err) {
