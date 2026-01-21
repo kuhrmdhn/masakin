@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { NextRequest } from "next/server";
 import { routeHandler } from "../../utils/routeHandler";
 import { pagination } from "../../utils/pagination";
+import ApiResponse from "../../utils/apiResponse";
 
 export async function GET(req: NextRequest) {
   return routeHandler(async () => {
@@ -10,10 +11,10 @@ export async function GET(req: NextRequest) {
     const { skip, pageNumber, pageSize } = pagination(req);
 
     if (!username) {
-      throw new Error("Username params is required");
+      return ApiResponse.validationError("Username params is required");
     }
 
-    const memberRecipe = await prisma.recipes.findMany({
+    const memberRecipes = await prisma.recipes.findMany({
       where: { author: { username } },
       include: { author: true },
       skip,
@@ -25,18 +26,12 @@ export async function GET(req: NextRequest) {
       where: { author: { username: username } },
     });
     const totalPages = Math.ceil(totalRecipes / pageSize);
-    const hasNextPage = totalPages < pageNumber;
 
-    return {
-      data: memberRecipe,
-      message: `Successfully get ${memberRecipe.length} recipe`,
-      pagination: {
-        currentPage: pageNumber,
-        pageSize,
-        totalRecipes,
-        totalPages,
-        hasNextPage,
-      },
-    };
+    return ApiResponse.paginated(
+      `Successfully get ${memberRecipes.length} recipe`,
+      pageNumber,
+      totalPages,
+      memberRecipes
+    )
   });
 }

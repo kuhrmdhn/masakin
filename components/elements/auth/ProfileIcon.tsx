@@ -1,17 +1,20 @@
-import Image from 'next/image';
-import { cookies } from 'next/headers';
+import Image from "next/image";
+import { cookies } from "next/headers";
 
 async function getUserData() {
   try {
     const cookieStore = await cookies();
 
-    const request = await fetch(`${process.env.BASE_URL}/api/auth/user`, {
-      method: "GET",
-      headers: {
-        'Cookie': cookieStore.toString()
+    const request = await fetch(
+      `${process.env.BASE_URL}/api/auth/user/profile`,
+      {
+        method: "GET",
+        headers: {
+          Cookie: cookieStore.toString(),
+        },
+        cache: "no-store",
       },
-      cache: 'no-store'
-    });
+    );
 
     return await request.json();
   } catch (error) {
@@ -20,7 +23,7 @@ async function getUserData() {
   }
 }
 
-type Props = React.ComponentProps<typeof Image>
+type Props = React.ComponentProps<typeof Image>;
 
 export default async function ProfileIcon({ ...props }: Partial<Props>) {
   const response = await getUserData();
@@ -31,8 +34,11 @@ export default async function ProfileIcon({ ...props }: Partial<Props>) {
       width={1080}
       height={1080}
       src={userData?.avatar || "/default-user-avatar.svg"}
-      alt={userData?.username ? `${userData.username} Avatar` : "Default Avatar"}
+      alt={
+        userData?.username ? `${userData.username} Avatar` : "Default Avatar"
+      }
       className={`rounded-full w-8 object-cover object-center aspect-square ${props.className}`}
     />
   );
 }
+

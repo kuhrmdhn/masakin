@@ -2,6 +2,7 @@ import { routeHandler } from "@/app/api/utils/routeHandler";
 import { prisma } from "@/lib/prisma";
 import { NextRequest } from "next/server";
 import { readSession } from "../../../utils/readSession";
+import ApiResponse from "@/app/api/utils/apiResponse";
 
 export async function GET(req: NextRequest) {
   return routeHandler(async () => {
@@ -9,7 +10,7 @@ export async function GET(req: NextRequest) {
     const recipeId = searchParams.get("recipeId");
 
     if (!recipeId) {
-      return { error: "recipeId is required", data: false };
+      return ApiResponse.validationError("Required recipeId search params");
     }
 
     const { id: currentUserId } = await readSession();
@@ -21,6 +22,11 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    return { status: !!isSavedByCurrentUser };
+    const status = !!isSavedByCurrentUser;
+
+    return ApiResponse.success(
+      `${recipeId} is ${status ? "saved" : "not saved"} by user: ${currentUserId}`,
+      { status },
+    );
   });
 }

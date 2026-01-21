@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest } from "next/server";
 import { routeHandler } from "../utils/routeHandler";
+import ApiResponse from "../utils/apiResponse";
 
 export async function GET(req: NextRequest) {
   return routeHandler(async () => {
@@ -8,7 +9,7 @@ export async function GET(req: NextRequest) {
     const username = params.get("username");
 
     if (!username) {
-      throw new Error("Username params is required");
+      return ApiResponse.validationError("Username params is required");
     }
 
     const user = await prisma.users.findUnique({
@@ -17,9 +18,9 @@ export async function GET(req: NextRequest) {
     });
 
     if (!user) {
-      throw new Error("User not found");
+      return ApiResponse.notFound(`Not found user found for: ${username}`);
     }
 
-    return { data: user };
+    return ApiResponse.success("Success get member data", user);
   });
 }

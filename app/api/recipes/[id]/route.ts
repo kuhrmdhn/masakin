@@ -3,6 +3,7 @@ import { deleteRecipe } from "./utils/deleteRecipe";
 import { routeHandler } from "../../utils/routeHandler";
 import { updateRecipe } from "./utils/updateRecipe";
 import { getRecipe } from "./utils/getRecipe";
+import ApiResponse from "../../utils/apiResponse";
 
 export async function GET(
   req: NextRequest,
@@ -12,7 +13,11 @@ export async function GET(
     const { id } = await params;
     const recipe = await getRecipe(id);
 
-    return { data: recipe, message: `Success get recipe: ${id}` };
+    if (!recipe) {
+      return ApiResponse.notFound(`Not found recipe with id: ${id}`)
+    }
+
+    return ApiResponse.success(`Success get recipe: ${id}`, recipe);
   });
 }
 
@@ -22,10 +27,14 @@ export async function DELETE(
 ) {
   return routeHandler(async () => {
     const { id } = await params;
-    const { id: deletedRecipeId } = await deleteRecipe(id);
-    return {
-      message: `Deleted recipe: ${deletedRecipeId}`,
-    };
+    const deleteRecipes = await deleteRecipe(id);
+    const deletedRecipes = deleteRecipes.count
+
+    if (deletedRecipes < 1) {
+      return ApiResponse.error("Nothing recipes deleted", 400)
+    }
+
+    return ApiResponse.success(`Deleted ${deletedRecipes} recipes`)
   });
 }
 
@@ -38,9 +47,9 @@ export async function PATCH(
     const { id } = await params;
     const updatedRecipe = await updateRecipe(recipeFieldToUpdate, id);
 
-    return {
-      data: updatedRecipe,
-      message: `Sucess updated recipe: ${updatedRecipe.id}`,
-    };
+    return ApiResponse.success(
+      `Sucess updated recipe: ${updatedRecipe.id}`,
+      updatedRecipe,
+    );
   });
 }

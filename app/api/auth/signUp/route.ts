@@ -3,6 +3,7 @@ import { signUpUser } from "../utils/signUpUser";
 import { writeUser } from "../utils/writeUser";
 import { routeHandler } from "../../utils/routeHandler";
 import { prisma } from "@/lib/prisma";
+import ApiResponse from "../../utils/apiResponse";
 
 export async function POST(req: NextRequest) {
   return routeHandler(async () => {
@@ -13,8 +14,9 @@ export async function POST(req: NextRequest) {
       password,
       username,
     };
+
     if (!username || typeof username !== "string") {
-      throw new Error("Nama pengguna tidak boleh kosong");
+      return ApiResponse.validationError("Nama pengguna tidak boleh kosong");
     }
 
     const userFilter = await prisma.users.findUnique({
@@ -24,7 +26,7 @@ export async function POST(req: NextRequest) {
     });
 
     if (userFilter) {
-      throw new Error(
+      return ApiResponse.validationError(
         "Nama pengguna sudah digunakan, silahkan ganti nama pengguna atau masuk ke akun yang sudah terdaftar",
       );
     }
@@ -32,13 +34,10 @@ export async function POST(req: NextRequest) {
     const user = await signUpUser(credentials);
 
     if (!user) {
-      throw new Error("Failed to sign up, try again later");
+      return ApiResponse.unauthenticated("Failed to sign up, try again later");
     }
     await writeUser(user);
 
-    return {
-      message: "Sign up data received successfully",
-      data: username,
-    };
+    return ApiResponse.success("Sign up data received successfully");
   });
 }

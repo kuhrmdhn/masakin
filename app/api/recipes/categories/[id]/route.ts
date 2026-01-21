@@ -2,6 +2,7 @@ import { routeHandler } from "@/app/api/utils/routeHandler";
 import { NextRequest } from "next/server";
 import { deleteRecipeCategory } from "./utils/deleteRecipeCategory";
 import { updateRecipeCategoryName } from "./utils/updateRecipeCategoryName";
+import ApiResponse from "@/app/api/utils/apiResponse";
 
 export async function PATCH(
   req: NextRequest,
@@ -10,9 +11,12 @@ export async function PATCH(
   return routeHandler(async () => {
     const { id } = await params;
     const { newCategoryName } = await req.json();
-    const updatedRecipeCategory = await updateRecipeCategoryName(id, newCategoryName)
+    const updatedRecipeCategory = await updateRecipeCategoryName(
+      id,
+      newCategoryName,
+    );
 
-    return updatedRecipeCategory;
+    return ApiResponse.success(`Updated recipe: ${id}`, updatedRecipeCategory);
   });
 }
 
@@ -22,7 +26,8 @@ export async function DELETE(
 ) {
   return routeHandler(async () => {
     const { id } = await params;
-    const { id: deletedRecipeCategoryId } = await deleteRecipeCategory(id)
-    return `Deleted recipe category: ${deletedRecipeCategoryId}`
+    const deleteRecipeCategories = await deleteRecipeCategory(id);
+    const deletedCategories = deleteRecipeCategories.count;
+    return ApiResponse.success(`Deleted ${deletedCategories} recipe category`);
   });
 }

@@ -9,8 +9,6 @@ export async function getRecipe(id: string) {
       author: { select: { id: true, avatar: true, username: true } },
     },
   });
-  if (recipe == null) {
-    throw new Error(`Not found recipe: ${id}`);
-  }
+
   return recipe;
 }
