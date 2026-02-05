@@ -1,7 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Info } from "lucide-react";
-import CategoryInput from "./CategoryInput";
 
 const basicInformationFields = [
   {
@@ -54,17 +53,21 @@ export default function BasicInformationInput({ initialData = {} }: Props) {
               {field.label}
             </Label>
             <Input
+              min={1}
               type={field.type}
               placeholder={field.placeholder}
               id={field.name}
               name={field.name}
               required
-              defaultValue={initialData[field.name]?.toString() || ""}
+              defaultValue={
+                field.name === "duration"
+                  ? (parseInt(initialData.duration as string) || 0) / 60
+                  : initialData[field.name]?.toString() || ""
+              }
             />
           </div>
         ))}
       </section>
-      <CategoryInput />
     </div>
   );
 }

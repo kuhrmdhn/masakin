@@ -2,15 +2,13 @@ import { prisma } from "@/lib/prisma";
 import { recipeSchema } from "@/zod/recipeSchema";
 import z from "zod";
 import { v4 as uuidv4 } from "uuid";
-import { uploadRecipeImage } from "./uploadRecipeImage";
 
 export async function uploadNewRecipe(formData: FormData, author_id: string) {
   const title = formData.get("title") as string;
   const serving = parseInt(formData.get("serving") as string);
   const duration = parseInt(formData.get("duration") as string) * 60;
   const category_id = formData.get("category_id") as string;
-
-  const rawImageValue = formData.get("image") as File;
+  const image = formData.get("image") as string;
 
   const rawDescriptionValue = formData.get("description") as string;
   const description =
@@ -26,8 +24,6 @@ export async function uploadNewRecipe(formData: FormData, author_id: string) {
     name: rawNameValue[i],
   }));
 
-  const { publicUrl } = await uploadRecipeImage(rawImageValue);
-
   const newRecipeData = {
     title,
     description,
@@ -35,7 +31,7 @@ export async function uploadNewRecipe(formData: FormData, author_id: string) {
     serving,
     category_id,
     author_id,
-    image: publicUrl,
+    image,
     steps: stepsValue,
     ingredients: ingredientsValue,
   };

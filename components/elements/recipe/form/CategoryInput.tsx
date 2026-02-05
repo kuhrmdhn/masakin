@@ -1,37 +1,31 @@
-"use client";
 import {
   Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
+  SelectContent,
+  SelectGroup,
+  SelectLabel,
+  SelectItem,
 } from "@/components/ui/select";
 import { RecipeCategories } from "@/generated/prisma/client";
-import { useEffect, useState } from "react";
 
 type Props = {
   defaultCategory?: string;
+  categories: RecipeCategories[];
+  className?: string;
 };
 
-export default function CategoryInput({ defaultCategory }: Props) {
-  const [categories, setCategories] = useState<RecipeCategories[]>([]);
-  useEffect(() => {
-    async function getCategories() {
-      const request = await fetch("/api/recipes/categories", { method: "GET" });
-      const response = await request.json();
-      const categoryLists = response.data as RecipeCategories[];
-      setCategories(categoryLists);
-    }
-    getCategories();
-  }, []);
+export default function CategoryInput({
+  defaultCategory,
+  categories,
+  className = "",
+}: Props) {
   return (
-    <section className="mt-5">
+    <section className={`mt-5 ${className}`}>
       <p className="text-sm font-medium">Kategori</p>
       <Select value={defaultCategory || undefined} name="category_id">
         <SelectTrigger className="w-full">
-          <SelectValue placeholder="Pilih kategori resep" />
+          <SelectValue className="h-12" placeholder="Pilih kategori resep" />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>

@@ -14,7 +14,7 @@ export async function GET(
     const recipe = await getRecipe(id);
 
     if (!recipe) {
-      return ApiResponse.notFound(`Not found recipe with id: ${id}`)
+      return ApiResponse.notFound(`Not found recipe with id: ${id}`);
     }
 
     return ApiResponse.success(`Success get recipe: ${id}`, recipe);
@@ -28,13 +28,13 @@ export async function DELETE(
   return routeHandler(async () => {
     const { id } = await params;
     const deleteRecipes = await deleteRecipe(id);
-    const deletedRecipes = deleteRecipes.count
+    const deletedRecipes = deleteRecipes.count;
 
     if (deletedRecipes < 1) {
-      return ApiResponse.error("Nothing recipes deleted", 400)
+      return ApiResponse.error("Nothing recipes deleted", 400);
     }
 
-    return ApiResponse.success(`Deleted ${deletedRecipes} recipes`)
+    return ApiResponse.success(`Deleted ${deletedRecipes} recipes`);
   });
 }
 
@@ -43,13 +43,11 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> },
 ) {
   return routeHandler(async () => {
-    const recipeFieldToUpdate = await req.json();
+    const formData = await req.formData();
+    const fields = Object.fromEntries(formData);
     const { id } = await params;
-    const updatedRecipe = await updateRecipe(recipeFieldToUpdate, id);
+    const updatedRecipe = await updateRecipe(fields, id);
 
-    return ApiResponse.success(
-      `Sucess updated recipe: ${updatedRecipe.id}`,
-      updatedRecipe,
-    );
+    return ApiResponse.success(`Sucess updated recipe`, updatedRecipe);
   });
 }
