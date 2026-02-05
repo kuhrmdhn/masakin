@@ -54,11 +54,12 @@ const recipeSchema = z.object({
     .min(1, "Resep setidaknya memiliki 1 bahan"),
 });
 
+const editRecipeSchema = recipeSchema
+  .partial()
+
 export type Recipe = z.infer<typeof recipeSchema> & {
   id: string;
   author: User;
-  ingredients: { quantity: string; name: string }[];
-  steps: { step: string }[];
 };
 export type RecipeIngredients = z.infer<typeof recipeIngredientSchema> & {
   id: string;
@@ -66,4 +67,9 @@ export type RecipeIngredients = z.infer<typeof recipeIngredientSchema> & {
 export type RecipeSteps = z.infer<typeof recipeStepSchema> & { id: string };
 export type SavedRecipe = { id: string; recipe_id: string; user_id: string };
 
-export { recipeSchema, recipeStepSchema, recipeIngredientSchema };
+export {
+  recipeSchema,
+  recipeStepSchema,
+  recipeIngredientSchema,
+  editRecipeSchema,
+};

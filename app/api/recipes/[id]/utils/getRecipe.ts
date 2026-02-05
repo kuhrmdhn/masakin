@@ -7,6 +7,7 @@ export async function getRecipe(id: string) {
       ingredients: true,
       steps: true,
       author: { select: { id: true, avatar: true, username: true } },
+      recipeCategories: { select: { id: true, name: true } },
     },
   });
 
