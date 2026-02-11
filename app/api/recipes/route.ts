@@ -15,7 +15,14 @@ export async function GET(req: NextRequest) {
     const searchKeyParams = params.get("q") || "";
     const decodedSearchKeyParams = decodeURIComponent(searchKeyParams);
     const q = decodedSearchKeyParams.trim();
-    const haveQuery = q && q.length > 0;
+
+    const searchCategoryKeyParams = params.get("category") || "";
+    const decodedSearchCategoryKeyParams = decodeURIComponent(
+      searchCategoryKeyParams,
+    );
+    const category = decodedSearchCategoryKeyParams.trim().toLowerCase();
+
+    const haveQuery = (q && q.length > 0) || (category && category.length > 0);
 
     const { pageNumber, pageSize, skip } = pagination(req);
 
@@ -36,6 +43,12 @@ export async function GET(req: NextRequest) {
                     mode: "insensitive" as const,
                   },
                 },
+              },
+            },
+            {
+              category_id: {
+                contains: category,
+                mode: "insensitive" as const,
               },
             },
           ],
