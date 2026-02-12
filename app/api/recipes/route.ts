@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
     const decodedSearchKeyParams = decodeURIComponent(searchKeyParams);
     const q = decodedSearchKeyParams.trim();
 
-    const searchCategoryKeyParams = params.get("category") || "";
+    const searchCategoryKeyParams = params.get("category_id") || "";
     const decodedSearchCategoryKeyParams = decodeURIComponent(
       searchCategoryKeyParams,
     );
